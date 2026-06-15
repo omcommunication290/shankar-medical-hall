@@ -338,6 +338,128 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerHTML = originalBtnHTML;
         }, 2000);
     }
+
+    // --- 9. B2B CRM MANUAL CSV GENERATOR ---
+    const csvForm = document.getElementById('csv-form');
+    const csvTbody = document.getElementById('csv-tbody');
+    const csvPreviewTitle = document.getElementById('csv-preview-title');
+    const btnExportCsv = document.getElementById('btn-export-csv');
+    const btnClearCsv = document.getElementById('btn-clear-csv');
+
+    let productsList = [];
+
+    if (csvForm) {
+        csvForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Read input values
+            const name = document.getElementById('csv-name').value.trim();
+            const composition = document.getElementById('csv-composition').value.trim();
+            const batch = document.getElementById('csv-batch').value.trim();
+            const expiry = document.getElementById('csv-expiry').value.trim();
+            const hsn = document.getElementById('csv-hsn').value.trim();
+            const mrp = parseFloat(document.getElementById('csv-mrp').value).toFixed(2);
+            const stock = parseInt(document.getElementById('csv-stock').value, 10);
+
+            // Generate Product ID: SMH-101, SMH-102 etc.
+            const productId = `SMH-${100 + productsList.length + 1}`;
+
+            // Create product object
+            const newProduct = {
+                id: productId,
+                name: name,
+                composition: composition,
+                batch: batch,
+                expiry: expiry,
+                hsn: hsn,
+                mrp: mrp,
+                stock: stock
+            };
+
+            // Push to list
+            productsList.push(newProduct);
+
+            // Update preview table
+            updateCsvTable();
+
+            // Reset form fields
+            csvForm.reset();
+
+            showToast(`Product "${name}" added to list!`);
+        });
+    }
+
+    if (btnClearCsv) {
+        btnClearCsv.addEventListener('click', () => {
+            productsList = [];
+            updateCsvTable();
+            showToast("Product list cleared.");
+        });
+    }
+
+    if (btnExportCsv) {
+        btnExportCsv.addEventListener('click', () => {
+            if (productsList.length === 0) return;
+
+            // Generate CSV content
+            let csvContent = "Product ID,Medicine Name,Composition/Molecule,Batch Number,Expiry Date,HSN Code,MRP,Stock Quantity\n";
+            
+            productsList.forEach(p => {
+                // Escape values with commas if necessary
+                const nameEscaped = p.name.includes(',') ? `"${p.name}"` : p.name;
+                const compEscaped = p.composition.includes(',') ? `"${p.composition}"` : p.composition;
+                csvContent += `${p.id},${nameEscaped},${compEscaped},${p.batch},${p.expiry},${p.hsn},${p.mrp},${p.stock}\n`;
+            });
+
+            // Create Blob and download
+            try {
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", `pharma_inventory_${new Date().toISOString().slice(0,10)}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("CSV file exported successfully!");
+            } catch (err) {
+                showToast("Export failed. Please try again.");
+            }
+        });
+    }
+
+    function updateCsvTable() {
+        // Clear tbody
+        csvTbody.innerHTML = '';
+
+        if (productsList.length === 0) {
+            csvTbody.innerHTML = '<tr class="empty-row"><td colspan="8">No products added yet.</td></tr>';
+            btnExportCsv.disabled = true;
+            csvPreviewTitle.textContent = "Products List (0)";
+            return;
+        }
+
+        // Enable Export
+        btnExportCsv.disabled = false;
+        csvPreviewTitle.textContent = `Products List (${productsList.length})`;
+
+        // Append rows
+        productsList.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${p.id}</strong></td>
+                <td>${p.name}</td>
+                <td>${p.composition}</td>
+                <td>${p.batch}</td>
+                <td>${p.expiry}</td>
+                <td>${p.hsn}</td>
+                <td>₹${p.mrp}</td>
+                <td>${p.stock}</td>
+            `;
+            csvTbody.appendChild(tr);
+        });
+    }
 });
 
 // CSS spin animation helper added dynamically

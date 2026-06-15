@@ -648,6 +648,7 @@
                     <div class="crm-tabs">
                         <button class="crm-tab-btn active" data-tab="whatsapp">WhatsApp Template</button>
                         <button class="crm-tab-btn" data-tab="email">Email Template</button>
+                        <button class="crm-tab-btn" data-tab="manual-adder">Manual CSV Tool</button>
                     </div>
                     
                     <div class="crm-tab-content active" id="tab-whatsapp">
@@ -709,6 +710,78 @@ Shankar Medical Hall</pre>
                                 </svg>
                                 <span>Copy Email Template</span>
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Manual CSV Generator Tab -->
+                    <div class="crm-tab-content" id="tab-manual-adder">
+                        <form id="csv-form" class="crm-mini-form">
+                            <div class="form-row-mini">
+                                <div class="form-group-mini">
+                                    <label for="csv-name">Medicine Name *</label>
+                                    <input type="text" id="csv-name" placeholder="e.g., Paracetamol 650mg" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="csv-composition">Composition *</label>
+                                    <input type="text" id="csv-composition" placeholder="e.g., Paracetamol" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row-mini">
+                                <div class="form-group-mini">
+                                    <label for="csv-batch">Batch Number *</label>
+                                    <input type="text" id="csv-batch" placeholder="e.g., B-PR650-88" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="csv-expiry">Expiry Date *</label>
+                                    <input type="month" id="csv-expiry" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row-mini">
+                                <div class="form-group-mini">
+                                    <label for="csv-hsn">HSN Code *</label>
+                                    <input type="text" id="csv-hsn" placeholder="e.g., 30049011" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="csv-mrp">MRP (₹) *</label>
+                                    <input type="number" step="0.01" id="csv-mrp" placeholder="e.g., 30.50" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="csv-stock">Stock Qty *</label>
+                                    <input type="number" id="csv-stock" placeholder="e.g., 500" required>
+                                </div>
+                            </div>
+                            
+                            <div class="csv-actions-row">
+                                <button type="submit" id="btn-add-product" class="btn btn-primary btn-small">Add Product</button>
+                                <button type="button" id="btn-export-csv" class="btn btn-secondary btn-small" disabled>Export CSV</button>
+                                <button type="button" id="btn-clear-csv" class="btn btn-secondary btn-small" style="background: transparent; border-color: rgba(255,255,255,0.2); color: white;">Clear List</button>
+                            </div>
+                        </form>
+                        
+                        <!-- List Preview -->
+                        <div class="csv-preview-box">
+                            <span class="preview-title" id="csv-preview-title">Products List (0)</span>
+                            <div class="csv-table-wrapper">
+                                <table class="csv-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product ID</th>
+                                            <th>Name</th>
+                                            <th>Composition</th>
+                                            <th>Batch</th>
+                                            <th>Expiry</th>
+                                            <th>HSN</th>
+                                            <th>MRP</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="csv-tbody">
+                                        <tr class="empty-row"><td colspan="8">No products added yet.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
