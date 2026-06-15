@@ -259,6 +259,85 @@ document.addEventListener('DOMContentLoaded', () => {
             formStatus.style.display = 'block';
         }
     }
+
+    // --- 8. B2B PORTAL TABS & CRM COPY UTILITY ---
+    const tabButtons = document.querySelectorAll('.crm-tab-btn');
+    const tabContents = document.querySelectorAll('.crm-tab-content');
+    const copyTemplateButtons = document.querySelectorAll('.btn-copy-template');
+
+    // Tab Switching
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.getAttribute('data-tab');
+
+            // Remove active classes
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            // Add active classes
+            btn.classList.add('active');
+            const activeContent = document.getElementById(`tab-${targetTab}`);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+        });
+    });
+
+    // CRM Copy buttons
+    copyTemplateButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const textEl = document.getElementById(targetId);
+            if (!textEl) return;
+
+            const textToCopy = textEl.textContent || textEl.innerText;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        triggerTemplateFeedback(btn, 'Copied!');
+                    })
+                    .catch(() => {
+                        fallbackTemplateCopy(textToCopy, btn);
+                    });
+            } else {
+                fallbackTemplateCopy(textToCopy, btn);
+            }
+        });
+    });
+
+    function fallbackTemplateCopy(text, btn) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            triggerTemplateFeedback(btn, 'Copied!');
+        } catch (err) {
+            triggerTemplateFeedback(btn, 'Failed');
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function triggerTemplateFeedback(btn, statusText) {
+        const originalBtnHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: #ffffff; margin-right: 4px;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>${statusText}</span>
+        `;
+        showToast("Template copied to clipboard!");
+
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = originalBtnHTML;
+        }, 2000);
+    }
 });
 
 // CSS spin animation helper added dynamically
