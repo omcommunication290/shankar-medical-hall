@@ -2183,3 +2183,48 @@ img {
     color: rgba(255, 255, 255, 0.3);
     padding: 30px 0;
 }
+
+/* CRM Template Selector Dropdown */
+.template-selector-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.template-selector-row label {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.crm-select {
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-white);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    flex-grow: 1;
+}
+
+.crm-select:focus {
+    border-color: var(--color-secondary);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.crm-select option {
+    background-color: var(--color-primary);
+    color: var(--text-white);
+}

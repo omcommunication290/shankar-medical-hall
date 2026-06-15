@@ -584,6 +584,37 @@ document.addEventListener('DOMContentLoaded', () => {
             priceTbody.appendChild(tr);
         });
     }
+
+    // --- 11. B2B CRM TEMPLATE SELECTION ---
+    const selectWhatsappType = document.getElementById('select-whatsapp-type');
+    const selectEmailType = document.getElementById('select-email-type');
+    const textWhatsapp = document.getElementById('text-whatsapp');
+    const textEmail = document.getElementById('text-email');
+
+    const messageTemplates = {
+        whatsapp: {
+            followup: `📢 *URGENT: Stock Refill & Exclusive Bulk Offers!* 📢\n\nDear Partner,\n\nWe noticed you haven't placed an order with us in the last 15 days. We want to ensure your pharmacy shelves remain fully stocked with the highest-selling molecules.\n\n📦 *New Stock Arrival:* Fresh batches of critical prescription medicines, daily wellness supplements, and baby care essentials have just arrived in our inventory.\n\n⚡ *Special Bulk Offers (Valid till this week only):*\n• *Flat 5% Extra Discount* on orders above ₹15,000.\n• *Buy 10 get 1 Free* on high-demand OTC & Wellness molecules.\n• *Priority Shipping* with zero transport delays.\n\n⚠️ _Please note: Stock allocation is on a first-come, first-served basis._\n\n📲 *Place order now:* Reply to this message or call +91 9110053474.\n\nBest regards,\n*Shankar Medical Hall* (Owner: Divya Prakash)`,
+            'price-revision': `⚠️ *URGENT: Price Revision & Pre-Book Offer!* ⚠️\n\nDear Partner,\n\nPlease be informed that due to a significant rise in raw material (API) costs, there will be a *5% price revision* on our top-selling medicines. This revision will take effect from next week.\n\n📋 *New Rate List:* You can review the updated prices here:\nhttps://omcommunication290.github.io/shankar-medical-hall/\n\n💡 *Save on Your Next Batch:* You can still book your stock at the *current (old) rates* if you place your order *TODAY*.\n\n📲 *Place your booking now:* Reply to this message or call +91 9110053474 immediately to secure your pricing.\n\nBest regards,\n*Shankar Medical Hall* (Owner: Divya Prakash)`
+        },
+        email: {
+            followup: `Subject: Urgent: Refill Your Stock | Fresh Inventory & Limited-Time Bulk Discounts\n\nDear Partner,\n\nWe noticed that it has been over 15 days since your last order. To ensure you don't face any stock-outs on fast-moving medicines, we are reaching out with an important inventory update.\n\n1. New Stock Now Available:\nWe have just received fresh, certified batches of our core pharmaceutical formulations, daily wellness supplements, and baby care range.\n\n2. Exclusive Bulk Offers (Active for 48 Hours):\n• Flat 5% extra discount on orders exceeding ₹15,000.\n• Buy 10, get 1 free on top-selling OTC and immunity-boosting brands.\n• Guaranteed priority dispatch within 24 hours.\n\nPlease reply to this email or call us directly at +91 9110053474 to lock in your rates and ensure priority dispatch.\n\nSincerely,\nDivya Prakash (Owner)\nShankar Medical Hall`,
+            'price-revision': `Subject: URGENT: Price Revision Notice & Opportunity to Pre-Book at Old Rates\n\nDear Partner,\n\nWe are writing to notify you about an upcoming adjustment in our price list.\n\nDue to a substantial increase in raw material (API) and manufacturing costs, we are implementing a 5% price revision on our top-selling pharmaceutical products. This new pricing structure will be effective from next week.\n\nYou can review the new rate list on our B2B portal here: \nhttps://omcommunication290.github.io/shankar-medical-hall/\n\nPre-Book at Current Rates Today:\nWe highly value our relationship and want to help you minimize the impact of this change. You can book your stock at the current (lower) rates for all orders placed before today 9:00 PM.\n\nPlease review your inventory needs and reply to this email or contact our B2B desk directly at +91 9110053474 to lock in your rates.\n\nSincerely,\nDivya Prakash (Owner)\nShankar Medical Hall`
+        }
+    };
+
+    if (selectWhatsappType && textWhatsapp) {
+        selectWhatsappType.addEventListener('change', (e) => {
+            const selectedType = e.target.value;
+            textWhatsapp.textContent = messageTemplates.whatsapp[selectedType];
+        });
+    }
+
+    if (selectEmailType && textEmail) {
+        selectEmailType.addEventListener('change', (e) => {
+            const selectedType = e.target.value;
+            textEmail.textContent = messageTemplates.email[selectedType];
+        });
+    }
 });
 
 // CSS spin animation helper added dynamically
