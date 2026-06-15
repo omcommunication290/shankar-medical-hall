@@ -404,6 +404,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Interactive Product Showcase -->
+            <div class="product-showroom scroll-reveal" style="margin-top: 60px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 50px;">
+                <div class="section-header-centered" style="margin-bottom: 30px;">
+                    <span class="section-subtitle" style="color: var(--color-secondary); display: inline-block; margin-bottom: 6px;">LIVE PRODUCTS</span>
+                    <h3 style="font-size: 26px; font-family: var(--font-heading); font-weight: 700; color: var(--text-white); margin-top: 6px;">Featured Medicine Catalog</h3>
+                    <p class="section-desc-centered" style="max-width: 650px; margin: 8px auto 0 auto; font-size: 14px; color: rgba(255, 255, 255, 0.6); text-align: center;">Browse our top-selling formulations with real-time stock and margin details for stockists.</p>
+                </div>
+
+                <!-- Category Filters Tabs -->
+                <div class="showroom-filters" style="display: flex; justify-content: center; gap: 12px; margin-bottom: 40px; flex-wrap: wrap;">
+                    <button class="filter-btn active" data-filter="all" style="background-color: var(--color-primary); color: white; border: 1px solid rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 30px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;">All Products</button>
+                    <button class="filter-btn" data-filter="prescription" style="background-color: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 30px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;">Prescriptions</button>
+                    <button class="filter-btn" data-filter="wellness" style="background-color: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 30px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;">Wellness & Vitamins</button>
+                    <button class="filter-btn" data-filter="otc" style="background-color: rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.05); padding: 8px 20px; border-radius: 30px; font-family: var(--font-heading); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s ease;">OTC Healthcare</button>
+                </div>
+
+                <!-- Product Grid -->
+                <div class="showroom-grid" id="showroom-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+                    <!-- Dynamically populated by JavaScript -->
+                </div>
+            </div>
         </div>
     </section>
 

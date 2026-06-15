@@ -678,6 +678,124 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Run on startup
     renderCatalog();
+
+    // --- 13. B2B PRODUCT CATALOG SHOWROOM RENDERING & FILTERS ---
+    const showroomGrid = document.getElementById('showroom-grid');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    const productImages = {
+        prescription: "assets/category-prescription.png",
+        wellness: "assets/category-wellness.png",
+        otc: "assets/category-otc.png",
+        baby: "assets/category-baby.png"
+    };
+
+    function getProductImageAndCategoryType(item) {
+        const cat = item.category.toLowerCase();
+        if (cat.includes('iron') || cat.includes('vitamin') || cat.includes('immunity') || cat.includes('supplement') || cat.includes('multivitamin')) {
+            return { img: productImages.wellness, type: "wellness", label: "Wellness & Vitamins" };
+        } else if (cat.includes('syrup') || cat.includes('otc') || cat.includes('liquid') || cat.includes('gel')) {
+            return { img: productImages.otc, type: "otc", label: "OTC Healthcare" };
+        } else {
+            return { img: productImages.prescription, type: "prescription", label: "Prescription Medicine" };
+        }
+    }
+
+    function renderShowroom(filter = 'all') {
+        if (!showroomGrid) return;
+        showroomGrid.innerHTML = '';
+
+        const filtered = masterCatalog.filter(item => {
+            const info = getProductImageAndCategoryType(item);
+            return filter === 'all' || info.type === filter;
+        });
+
+        filtered.forEach(p => {
+            const info = getProductImageAndCategoryType(p);
+            const card = document.createElement('div');
+            card.className = 'product-showroom-card';
+            card.style.cssText = 'background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; overflow: hidden; transition: all 0.3s ease; display: flex; flex-direction: column; opacity: 0; transform: translateY(20px);';
+            
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-6px)';
+                card.style.borderColor = 'var(--color-secondary)';
+                card.style.boxShadow = '0 10px 25px -5px rgba(20, 184, 166, 0.15)';
+                const img = card.querySelector('.showroom-card-img');
+                if (img) img.style.transform = 'scale(1.05)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+                card.style.boxShadow = 'none';
+                const img = card.querySelector('.showroom-card-img');
+                if (img) img.style.transform = 'scale(1)';
+            });
+
+            card.innerHTML = `
+                <div class="showroom-img-box" style="position: relative; height: 160px; overflow: hidden; background-color: rgba(0,0,0,0.2);">
+                    <img src="${info.img}" alt="${p.name}" class="showroom-card-img" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;">
+                    <div style="position: absolute; top: 12px; left: 12px; background: rgba(15, 23, 42, 0.85); color: var(--color-secondary); padding: 4px 10px; border-radius: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(20, 184, 166, 0.2); font-family: var(--font-heading);">${p.category}</div>
+                    <div style="position: absolute; bottom: 12px; right: 12px; background: rgba(20, 184, 166, 0.9); color: var(--color-primary); padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; font-family: var(--font-heading);">₹${p.mrp}</div>
+                </div>
+                <div class="showroom-body" style="padding: 20px; display: flex; flex-direction: column; flex-grow: 1;">
+                    <div style="font-family: monospace; font-size: 10.5px; color: rgba(255, 255, 255, 0.4); margin-bottom: 6px;">${p.id} | ${p.unit}</div>
+                    <h4 style="font-size: 16px; font-family: var(--font-heading); font-weight: 700; color: var(--text-white); margin-bottom: 6px; line-height: 1.3;">${p.name}</h4>
+                    <p style="font-size: 12.5px; color: rgba(255, 255, 255, 0.55); font-style: italic; margin-bottom: 16px; flex-grow: 1; line-height: 1.4; font-family: var(--font-body);">${p.composition}</p>
+                    
+                    <div class="showroom-b2b-box" style="background-color: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 6px; padding: 10px 12px; margin-bottom: 16px; font-size: 12px; font-family: var(--font-body);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                            <span style="color: rgba(255, 255, 255, 0.55);">Chemist PTR (Net):</span>
+                            <strong style="color: var(--color-secondary);">₹${p.ptr}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: rgba(255, 255, 255, 0.55);">Stockist PTS (Net):</span>
+                            <strong style="color: #38BDF8;">₹${p.pts}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="showroom-actions" style="display: flex; gap: 8px;">
+                        <a href="tel:+919110053474" class="btn btn-primary btn-small" style="flex-grow: 1; text-align: center; justify-content: center; font-size: 11px; padding: 8px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; font-family: var(--font-heading); display: inline-flex; align-items: center;">
+                            <span>Order Store</span>
+                        </a>
+                        <a href="https://wa.me/919110053474?text=Hello%20Shankar%20Medical%20Hall,%20I%20would%20like%20to%20place%20a%20B2B%20order%20for%20${encodeURIComponent(p.name)}%20(ID:%20${p.id})." target="_blank" class="btn btn-secondary btn-small" style="font-size: 11px; padding: 8px 12px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; background: #128C7E; border-color: #128C7E; color: white; transition: all 0.2s ease;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.717-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.432.002 9.851-4.417 9.854-9.852.002-2.632-1.02-5.105-2.877-6.965C16.392 1.93 13.918.91 11.29.91c-5.436 0-9.854 4.416-9.857 9.853-.001 1.74.47 3.433 1.365 4.93L1.758 20.47l4.89-1.316z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            showroomGrid.appendChild(card);
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 50 * showroomGrid.children.length);
+        });
+    }
+
+    if (filterButtons.length > 0) {
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.backgroundColor = 'rgba(255,255,255,0.05)';
+                    b.style.color = 'rgba(255,255,255,0.7)';
+                    b.style.borderColor = 'rgba(255,255,255,0.05)';
+                });
+                btn.classList.add('active');
+                btn.style.backgroundColor = 'var(--color-primary)';
+                btn.style.color = 'white';
+                btn.style.borderColor = 'rgba(255,255,255,0.15)';
+
+                const filter = btn.getAttribute('data-filter');
+                renderShowroom(filter);
+            });
+        });
+    }
+
+    renderShowroom();
 });
 
 // CSS spin animation helper added dynamically
