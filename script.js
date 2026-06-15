@@ -460,6 +460,130 @@ document.addEventListener('DOMContentLoaded', () => {
             csvTbody.appendChild(tr);
         });
     }
+
+    // --- 10. B2B CRM PRICE CALCULATOR ---
+    const priceForm = document.getElementById('price-form');
+    const priceTbody = document.getElementById('price-tbody');
+    const pricePreviewTitle = document.getElementById('price-preview-title');
+    const btnExportPrices = document.getElementById('btn-export-prices');
+    const btnClearPrices = document.getElementById('btn-clear-prices');
+
+    let pricesList = [];
+
+    if (priceForm) {
+        priceForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Read values
+            const name = document.getElementById('price-name').value.trim();
+            const beforeMrp = parseFloat(document.getElementById('price-before').value).toFixed(2);
+            const afterMrp = parseFloat(document.getElementById('price-after').value);
+            const retailMargin = parseFloat(document.getElementById('price-retail-margin').value) / 100;
+            const stockistMargin = parseFloat(document.getElementById('price-stockist-margin').value) / 100;
+            const gstRate = parseFloat(document.getElementById('price-gst').value) / 100;
+
+            // Calculate PTS and GST
+            // Formula: PTS (incl. GST) = After MRP / (1 + Retailer Margin) / (1 + Stockist Margin)
+            const ptsInclGstValue = afterMrp / (1 + retailMargin) / (1 + stockistMargin);
+            const ptsInclGst = ptsInclGstValue.toFixed(2);
+
+            // Net PTS (excl. GST) = PTS (incl. GST) / (1 + GST Rate)
+            const netPtsExclGstValue = ptsInclGstValue / (1 + gstRate);
+            const netPtsExclGst = netPtsExclGstValue.toFixed(2);
+
+            // GST Amount = PTS (incl. GST) - Net PTS (excl. GST)
+            const gstAmt = (ptsInclGstValue - netPtsExclGstValue).toFixed(2);
+
+            // Create price record object
+            const newPriceRecord = {
+                name: name,
+                beforeMrp: beforeMrp,
+                afterMrp: afterMrp.toFixed(2),
+                netPts: netPtsExclGst,
+                gstAmt: gstAmt,
+                ptsInclGst: ptsInclGst
+            };
+
+            // Push to array
+            pricesList.push(newPriceRecord);
+
+            // Update preview table
+            updatePricesTable();
+
+            // Reset name, before and after inputs (keep default margins/gst)
+            document.getElementById('price-name').value = '';
+            document.getElementById('price-before').value = '';
+            document.getElementById('price-after').value = '';
+
+            showToast(`Calculated prices for "${name}"!`);
+        });
+    }
+
+    if (btnClearPrices) {
+        btnClearPrices.addEventListener('click', () => {
+            pricesList = [];
+            updatePricesTable();
+            showToast("Prices list cleared.");
+        });
+    }
+
+    if (btnExportPrices) {
+        btnExportPrices.addEventListener('click', () => {
+            if (pricesList.length === 0) return;
+
+            // Generate CSV
+            let csvContent = "Medicine Name,Before MRP,After MRP,Net PTS (Excl. GST),GST Amount,PTS (Incl. GST)\n";
+            pricesList.forEach(p => {
+                const nameEscaped = p.name.includes(',') ? `"${p.name}"` : p.name;
+                csvContent += `${nameEscaped},${p.beforeMrp},${p.afterMrp},${p.netPts},${p.gstAmt},${p.ptsInclGst}\n`;
+            });
+
+            // Trigger download
+            try {
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", `pharma_price_list_${new Date().toISOString().slice(0,10)}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("Prices CSV exported successfully!");
+            } catch (err) {
+                showToast("Prices CSV export failed.");
+            }
+        });
+    }
+
+    function updatePricesTable() {
+        priceTbody.innerHTML = '';
+
+        if (pricesList.length === 0) {
+            priceTbody.innerHTML = '<tr class="empty-row"><td colspan="6">No calculations added yet.</td></tr>';
+            btnExportPrices.disabled = true;
+            pricePreviewTitle.textContent = "Updated Prices List (0)";
+            return;
+        }
+
+        // Enable Export
+        btnExportPrices.disabled = false;
+        pricePreviewTitle.textContent = `Updated Prices List (${pricesList.length})`;
+
+        // Append rows
+        pricesList.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${p.name}</strong></td>
+                <td>₹${p.beforeMrp}</td>
+                <td>₹${p.afterMrp}</td>
+                <td>₹${p.netPts}</td>
+                <td>₹${p.gstAmt}</td>
+                <td>₹${p.ptsInclGst}</td>
+            `;
+            priceTbody.appendChild(tr);
+        });
+    }
 });
 
 // CSS spin animation helper added dynamically

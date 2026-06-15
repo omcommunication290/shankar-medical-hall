@@ -649,6 +649,7 @@
                         <button class="crm-tab-btn active" data-tab="whatsapp">WhatsApp Template</button>
                         <button class="crm-tab-btn" data-tab="email">Email Template</button>
                         <button class="crm-tab-btn" data-tab="manual-adder">Manual CSV Tool</button>
+                        <button class="crm-tab-btn" data-tab="price-updater">Price Calculator</button>
                     </div>
                     
                     <div class="crm-tab-content active" id="tab-whatsapp">
@@ -779,6 +780,69 @@ Shankar Medical Hall</pre>
                                     </thead>
                                     <tbody id="csv-tbody">
                                         <tr class="empty-row"><td colspan="8">No products added yet.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Calculator / Update Tool -->
+                    <div class="crm-tab-content" id="tab-price-updater">
+                        <form id="price-form" class="crm-mini-form">
+                            <div class="form-row-mini">
+                                <div class="form-group-mini">
+                                    <label for="price-name">Medicine Name *</label>
+                                    <input type="text" id="price-name" placeholder="e.g., Paracetamol 650mg" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="price-before">Before MRP (₹) *</label>
+                                    <input type="number" step="0.01" id="price-before" placeholder="e.g., 30.50" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="price-after">After MRP (₹) *</label>
+                                    <input type="number" step="0.01" id="price-after" placeholder="e.g., 32.00" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row-mini">
+                                <div class="form-group-mini">
+                                    <label for="price-retail-margin">Retailer Margin (%)</label>
+                                    <input type="number" id="price-retail-margin" value="20" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="price-stockist-margin">Stockist Margin (%)</label>
+                                    <input type="number" id="price-stockist-margin" value="10" required>
+                                </div>
+                                <div class="form-group-mini">
+                                    <label for="price-gst">GST (%)</label>
+                                    <input type="number" id="price-gst" value="12" required>
+                                </div>
+                            </div>
+                            
+                            <div class="csv-actions-row">
+                                <button type="submit" id="btn-calc-price" class="btn btn-primary btn-small">Calculate & Add</button>
+                                <button type="button" id="btn-export-prices" class="btn btn-secondary btn-small" disabled>Export Prices</button>
+                                <button type="button" id="btn-clear-prices" class="btn btn-secondary btn-small" style="background: transparent; border-color: rgba(255,255,255,0.2); color: white;">Clear List</button>
+                            </div>
+                        </form>
+                        
+                        <!-- List Preview -->
+                        <div class="csv-preview-box">
+                            <span class="preview-title" id="price-preview-title">Updated Prices List (0)</span>
+                            <div class="csv-table-wrapper">
+                                <table class="csv-mini-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Medicine Name</th>
+                                            <th>Before MRP</th>
+                                            <th>After MRP</th>
+                                            <th>Net PTS (Excl. GST)</th>
+                                            <th>GST (12%)</th>
+                                            <th>PTS (Incl. GST)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="price-tbody">
+                                        <tr class="empty-row"><td colspan="6">No calculations added yet.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
