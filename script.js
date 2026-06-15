@@ -615,6 +615,69 @@ document.addEventListener('DOMContentLoaded', () => {
             textEmail.textContent = messageTemplates.email[selectedType];
         });
     }
+
+    // --- 12. B2B LIVE MASTER CATALOG & SEARCH ---
+    const masterCatalog = [
+        { id: "MED-001", name: "Calpol 650mg / Dolo 650", composition: "Paracetamol 650mg", category: "Fever & Pain", unit: "15 Tablets", mrp: "30.00", gst: "12%", ptr: "22.32", pts: "20.29" },
+        { id: "MED-002", name: "Pan-D / Pantocid D", composition: "Pantoprazole 40mg + Domperidone", category: "Antacid / Gas", unit: "15 Capsules", mrp: "150.00", gst: "12%", ptr: "111.61", pts: "101.46" },
+        { id: "MED-003", name: "Amoxyclav 625 / Augmentin", composition: "Amoxicillin + Clavulanic Acid", category: "Antibiotic", unit: "10 Tablets", mrp: "200.00", gst: "12%", ptr: "148.81", pts: "135.28" },
+        { id: "MED-004", name: "Alerid / Cetzip", composition: "Cetirizine 10mg", category: "Allergy / Cold", unit: "10 Tablets", mrp: "45.00", gst: "12%", ptr: "33.48", pts: "30.44" },
+        { id: "MED-005", name: "Montair-LC", composition: "Montelukast + Levocetirizine", category: "Cough & Allergy", unit: "10 Tablets", mrp: "170.00", gst: "12%", ptr: "126.49", pts: "114.99" },
+        { id: "MED-006", name: "Combiflam", composition: "Ibuprofen + Paracetamol", category: "Painkiller", unit: "20 Tablets", mrp: "40.00", gst: "12%", ptr: "29.76", pts: "27.05" },
+        { id: "MED-007", name: "Azithral 500 / Azee 500", composition: "Azithromycin 500mg", category: "Antibiotic", unit: "5 Tablets", mrp: "120.00", gst: "12%", ptr: "89.29", pts: "81.17" },
+        { id: "MED-008", name: "Aciloc 150 / Rantac", composition: "Ranitidine 150mg", category: "Acidity", unit: "30 Tablets", mrp: "45.00", gst: "12%", ptr: "33.48", pts: "30.44" },
+        { id: "MED-009", name: "Orofer XT", composition: "Ferrous Ascorbate + Folic Acid", category: "Iron Supplement", unit: "10 Tablets", mrp: "180.00", gst: "12%", ptr: "133.93", pts: "121.75" },
+        { id: "MED-010", name: "Becosules", composition: "B-Complex + Vitamin C", category: "Multivitamin", unit: "20 Capsules", mrp: "55.00", gst: "12%", ptr: "40.92", pts: "37.20" },
+        { id: "MED-011", name: "Limcee 500mg", composition: "Vitamin C (Chewable)", category: "Immunity", unit: "15 Tablets", mrp: "30.00", gst: "12%", ptr: "22.32", pts: "20.29" },
+        { id: "MED-012", name: "Digene / Gelusil (Mint)", composition: "Antacid Gel (Liquid)", category: "Acidity Syrup", unit: "200ml Bottle", mrp: "130.00", gst: "12%", ptr: "96.73", pts: "87.94" }
+    ];
+
+    const catalogTbody = document.getElementById('catalog-tbody');
+    const catalogSearch = document.getElementById('catalog-search');
+
+    function renderCatalog(filterText = '') {
+        if (!catalogTbody) return;
+        catalogTbody.innerHTML = '';
+        
+        const lowerFilter = filterText.toLowerCase().trim();
+        const filtered = masterCatalog.filter(item => 
+            item.name.toLowerCase().includes(lowerFilter) || 
+            item.composition.toLowerCase().includes(lowerFilter) ||
+            item.id.toLowerCase().includes(lowerFilter) ||
+            item.category.toLowerCase().includes(lowerFilter)
+        );
+
+        if (filtered.length === 0) {
+            catalogTbody.innerHTML = '<tr class="empty-row"><td colspan="9" style="text-align:center; padding:30px 0; color:rgba(255,255,255,0.3);">No matching B2B products found.</td></tr>';
+            return;
+        }
+
+        filtered.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+            tr.innerHTML = `
+                <td style="padding: 12px 16px; color: rgba(255,255,255,0.5); font-family: monospace;">${p.id}</td>
+                <td style="padding: 12px 16px;"><strong>${p.name}</strong></td>
+                <td style="padding: 12px 16px; color: rgba(255,255,255,0.7); font-style: italic;">${p.composition}</td>
+                <td style="padding: 12px 16px;"><span style="background-color: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 4px; font-size: 11px; color: rgba(255,255,255,0.8);">${p.category}</span></td>
+                <td style="padding: 12px 16px; color: rgba(255,255,255,0.6);">${p.unit}</td>
+                <td style="padding: 12px 16px; text-align: right; font-weight: 500;">₹${p.mrp}</td>
+                <td style="padding: 12px 16px; text-align: center; color: rgba(255,255,255,0.6);">${p.gst}</td>
+                <td style="padding: 12px 16px; text-align: right; font-weight: 600; color: var(--color-secondary, #14B8A6);">₹${p.ptr}</td>
+                <td style="padding: 12px 16px; text-align: right; font-weight: 600; color: #38BDF8;">₹${p.pts}</td>
+            `;
+            catalogTbody.appendChild(tr);
+        });
+    }
+
+    if (catalogSearch) {
+        catalogSearch.addEventListener('input', (e) => {
+            renderCatalog(e.target.value);
+        });
+    }
+
+    // Run on startup
+    renderCatalog();
 });
 
 // CSS spin animation helper added dynamically
